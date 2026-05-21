@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Shopping Cart</h1>
+    </header>
+
+    <div id="cartContainer"></div>
+
+    <div class="total-box">
+        <h2 id="totalAmount"></h2>
+
+        <button onclick="placeOrder()">Place Order</button>
+    </div>
+
+    <script>
+
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        const cartContainer = document.getElementById('cartContainer');
+
+        const totalAmount = document.getElementById('totalAmount');
+
+        let total = 0;
+
+        cart.forEach((item) => {
+
+            total += item.price;
+
+            cartContainer.innerHTML += `
+            
+                <div class="card cart-card">
+
+                    <img src="${item.image}" />
+
+                    <h3>${item.name}</h3>
+
+                    <p>₹${item.price}</p>
+
+                </div>
+            
+            `;
+        });
+
+        totalAmount.innerText = "Total : ₹" + total;
+
+        async function placeOrder() {
+
+            const token = localStorage.getItem('token');
+
+            if(!token){
+                alert('Please Login First');
+                return;
+            }
+
+            const response = await fetch('http://localhost:5000/api/orders/create', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                },
+
+                body: JSON.stringify({
+                    products: cart,
+                    totalAmount: total
+                })
+
+            });
+
+            const data = await response.json();
+
+            alert(data.message);
+
+            localStorage.removeItem('cart');
+
+            window.location.reload();
+        }
+
+    </script>
+
+</body>
+</html>

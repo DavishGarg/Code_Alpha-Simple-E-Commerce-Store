@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Product Details</h1>
+    </header>
+
+    <div id="productDetails"></div>
+
+    <script>
+
+        const product = JSON.parse(localStorage.getItem('selectedProduct'));
+
+        const productDetails = document.getElementById('productDetails');
+
+        productDetails.innerHTML = `
+        
+            <div class="card details-card">
+
+                <img src="${product.image}" />
+
+                <h2>${product.name}</h2>
+
+                <p>${product.description}</p>
+
+                <h3>₹${product.price}</h3>
+
+                <button onclick='addToCart()'>Add To Cart</button>
+
+            </div>
+        
+        `;
+
+        function addToCart() {
+
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            cart.push(product);
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            alert('Product Added To Cart');
+        }
+
+    </script>
+
+</body>
+</html>
